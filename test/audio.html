@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Audio codec test - Basic Media Profile</title>
+<style>
+body {
+	font-family: Verdana, YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+}
+h1 {
+	font-size: 140%;
+}
+code {
+	font-family: Consolas, monospace;
+}
+.error {
+	color: red;
+}
+.success {
+	color: green;
+}
+table {
+	border-top: 1px solid #e5eff8;
+	border-right: 1px solid #e5eff8;
+	border-collapse: collapse;
+}
+thead th {
+	border-bottom: 1px solid #e5eff8;
+	border-left: 1px solid #e5eff8;
+	background: #f4f9fe;
+	text-align: center;
+	color: #66a3d3;
+	padding: 0.3em 1em;
+}
+tbody th, td {
+	color: #678197;
+	border-bottom: 1px solid #e5eff8;
+	border-left: 1px solid #e5eff8;
+	padding: 0.3em 1em;
+	text-align: center;
+}
+th,td {
+	font-family: Consolas, monospace;
+}
+</style>
+</head>
+<body>
+
+<h1>Audio codec test - Basic Media Profile</h1>
+
+<table>
+	<thead>
+		<tr>
+			<th>MIME Type</th>
+			<th>Codec support</th>
+			<th>Preload</th>
+			<th>Auto play</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th data-url="a.mp3">audio/mp3</th>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<th data-url="a.m4a">audio/mp4</th>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<th data-url="a.webm">audio/webm</th>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<th data-url="a.ogg">audio/ogg</th>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+<script>
+(function () {
+
+window.addEventListener("load",function() {
+	var tr_el_list = document.querySelectorAll("tbody>tr");
+	var row_index = 0;
+	(function tryToPlay() {
+		var tr_el = tr_el_list.item(row_index);
+		row_index ++;
+		if(row_index > tr_el_list.length) {
+			return;
+		}
+		var media_el = document.createElement("audio");
+		// Check codec support
+		var td_el_0 = tr_el.querySelectorAll("td").item(0);
+		var type = tr_el.querySelector("th").textContent;
+		var codec_support = media_el.canPlayType(type);
+		if(codec_support) {
+			td_el_0.textContent = "OK (" + codec_support + ")";
+			td_el_0.classList.add("success");
+		} else {
+			td_el_0.textContent = "NG";
+			td_el_0.classList.add("error");
+		}
+		// Check preload and autoplay
+		var td_el_1 = tr_el.querySelectorAll("td").item(1);
+		var td_el_2 = tr_el.querySelectorAll("td").item(2);
+		var event_canplaythrough_fired = false;
+		var event_playing_fired = false;
+		//
+		var timer_id = window.setTimeout(function() {
+			if(event_canplaythrough_fired === false) {
+				td_el_1.textContent = "NG";
+				td_el_1.classList.add("error")
+			}
+			if(event_playing_fired === false) {
+				td_el_2.textContent = "NG";
+				td_el_2.classList.add("error");
+			}
+			tryToPlay();
+		}, 5000);
+		//
+		media_el.addEventListener("canplaythrough", function(event) {
+			if(event_canplaythrough_fired) { return; }
+			event_canplaythrough_fired = true;
+			td_el_1.textContent = "OK";
+			td_el_1.classList.add("success");
+			//
+			media_el.addEventListener("playing", function(event) {
+				if(event_playing_fired) { return; }
+				event_playing_fired = true;
+				td_el_2.textContent = "OK";
+				td_el_2.classList.add("success");
+				window.clearTimeout(timer_id);
+				media_el.pause();
+				tryToPlay();
+			}, false);
+			//
+			media_el.play();
+			media_el.mute = true;
+			media_el.valume = 0;
+		}, false);
+		//
+		media_el.src = tr_el.querySelector("th").getAttribute("data-url");
+	})();
+
+}, false);
+
+})();
+</script>
+
+</body>
+</html>
