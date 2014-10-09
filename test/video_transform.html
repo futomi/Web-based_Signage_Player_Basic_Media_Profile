@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Video scaling test - Basic Media Profile</title>
+<title>Video transforming test - Basic Media Profile</title>
 <style>
 body {
 	font-family: Verdana, YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
@@ -19,6 +19,16 @@ code {
 #msg.success {
 	color: green;
 }
+label {
+	white-space: nowrap;
+	margin-right: 2em;
+}
+#controls {
+	margin-bottom: 150px;
+}
+input[type='checkbox'] {
+	vertical-align: middle;
+}
 video {
 	border: 1px solid #888888;
 }
@@ -26,14 +36,15 @@ video {
 </head>
 <body>
 
-<h1>Video scaling test - Basic Media Profile</h1>
+<h1>Video transforming test - Basic Media Profile</h1>
 
 <p>This test checks whether the video is scaled appropriately setting the <code>width</code> and <code>height</code> attribute of the <code>HTMLVideoElement</code> object.</p>
 
 <p id="msg"></p>
-<p>
-	<button id="dn">scale down</button>
-	<button id="up">scale up</button>
+<p id="controls">
+	<label><input id="translate" type="checkbox"> <code>translate(200px, 100px)</code></label>
+	<label><input id="scale" type="checkbox"> <code>scale(0.5)</code></label>
+	<label><input id="rotate" type="checkbox"> <code>rotate(90deg)</code></label>
 </p>
 <div id="v"></div>
 
@@ -60,17 +71,28 @@ window.addEventListener("load",function() {
 	}
 	video_el.play();
 	document.getElementById("v").appendChild(video_el);
-	//
-	document.getElementById("dn").addEventListener("click", function() {
-		video_el.width = video_el.width / 1.5;
-		video_el.height = video_el.width / aspect_ratio;
-	}, false);
-	//
-	document.getElementById("up").addEventListener("click", function() {
-		video_el.width = video_el.width * 1.5;
-		video_el.height = video_el.width / aspect_ratio;
-	}, false);
+	document.getElementById("controls").addEventListener("click", transformVideo, false);
 }, false);
+
+function transformVideo(event) {
+	var transform_list = [];
+	var translate_check_el = document.getElementById("translate");
+	if(translate_check_el.checked === true) {
+		var translate_code = translate_check_el.parentNode.querySelector("code").textContent;
+		transform_list.push(translate_code);
+	}
+	var scale_check_el = document.getElementById("scale");
+	if(scale_check_el.checked === true) {
+		var scale_code = scale_check_el.parentNode.querySelector("code").textContent;
+		transform_list.push(scale_code);
+	}
+	var rotate_check_el = document.getElementById("rotate");
+	if(rotate_check_el.checked === true) {
+		var rotate_code = rotate_check_el.parentNode.querySelector("code").textContent;
+		transform_list.push(rotate_code);
+	}
+	document.querySelector("video").style.transform = transform_list.join(" ");
+}
 
 function showMessage(msg, success_flag) {
 	var el = document.getElementById("msg");
