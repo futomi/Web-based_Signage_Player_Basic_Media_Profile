@@ -55,6 +55,22 @@ caption {
 	font-weight: bold;
 	margin-bottom: 0.3em;
 }
+code {
+	font-family: Consolas, monospace;
+}
+figure {
+	margin: 1em 1em;
+}
+figure pre.code {
+	display: block;
+	background-color: #eeeeee;
+	padding: 0.5em 1em;
+	margin: 0;
+}
+figure figcaption {
+	display: block;
+	margin: 0.5em 0em;
+}
 </style>
 </head>
 <body>
@@ -204,7 +220,20 @@ caption {
 	<h2 id="auto_play">4 Auto play</h2>
 	<p><a href="#web-based_signage">Web-based signage</a> has to continue to play scenes without any user actions. Especially, media  data is needed to be played  automatically controlled by the <a href="#application">application</a><a href="#player"></a>.</p>
 	<p>Unfortunately, some <a href="#runtime">runtime</a>s which are widely-spread in the world, especially browsers installed in mobile operating systems (e.g. iOS, Android) don't allow scripts to play media data without any user actions for the purpose of avoiding extra charge by mobile-phone operators.</p>
-	<p>The <a href="#runtime">runtime</a> must allow <a href="#application">application</a>s to start playing and pausing media data without any user actions.</p>
+	<p>The <a href="#runtime">runtime</a> must allow <a href="#application">application</a>s to start playing  media data without any user actions. The <a href="#runtime">runtime</a> must accept the steps as follows for this purpouse:</p>
+	<ol>
+	<li>The <a href="#application">application</a> creates a <code>HTMLMediaElement</code> object using  document.createElement() method. If the <code>HTMLMediaElement</code> is a <code>HTMLVideoElement</code> object, appends it in the <code>body</code> element of the HTML document.</li>
+	<li>The <a href="#application">application</a> sets the URL of the media resource to the <code>src</code> attribute of the <code>HTMLMediaElement</code> object.</li>
+	<li>The <a href="#application">application</a> invokes the <code>play()</code> method of the <code>HTMLMediaElement</code> object.</li>
+	<li>The <a href="#runtime">runtime</a> must start to play the media resource.</li>
+	</ol>
+	<figure>
+		<figcaption>Autoplay code example</figcaption>
+		<pre class="code"><code>var media_el = document.createElement(&quot;video&quot;);
+document.body.appendChild(media_el);
+media_el.src = &quot;v.mp4&quot;;
+media_el.play();</code></pre>
+	</figure>
 	<p>If the <a href="#application">application</a><a href="#player"></a> runs inside a hybrid mobile app and the underlying <a href="#runtime">runtime</a> doesn't allow the <a href="#application">application</a><a href="#player"></a> to start playing media data, the <a href="#application">application</a><a href="#player"></a> may invoke non-standard APIs exposed by the hybrid mobile app framework.</p>
 </section>
 <section>
