@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Video scaling test - Basic Media Profile</title>
+<style>
+body {
+	font-family: Verdana, YuGothic, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+}
+h1 {
+	font-size: 140%;
+}
+code {
+	font-family: Consolas, monospace;
+}
+#msg.error {
+	color: red;
+}
+#msg.success {
+	color: green;
+}
+video {
+	border: 1px solid #888888;
+}
+</style>
+</head>
+<body>
+
+<h1>Video scaling test - Basic Media Profile</h1>
+
+<p id="msg"></p>
+<p>
+	<button id="dn">scale down</button>
+	<button id="up">scale up</button>
+</p>
+<div id="v"></div>
+
+<script>
+(function () {
+
+window.addEventListener("load",function() {
+	var video_el = document.createElement("video");
+	video_el.width = 640;
+	video_el.height = 360;
+	video_el.loop = true;
+	video_el.controls = true;
+	video_el.mute = true;
+	video_el.volume = 0;
+	var aspect_ratio = video_el.width / video_el.height;
+	//
+	if(video_el.canPlayType("video/mp4")) {
+		video_el.src = "v.mp4";
+	} else if(video_el.canPlayType("video/webm")) {
+		video_el.src = "v.webm";
+	} else {
+		showMessage("This runtime doesn't support any video codecs.", false);
+		return;
+	}
+	video_el.play();
+	document.getElementById("v").appendChild(video_el);
+	//
+	document.getElementById("dn").addEventListener("click", function() {
+		video_el.width = video_el.width / 1.5;
+		video_el.height = video_el.width / aspect_ratio;
+	}, false);
+	//
+	document.getElementById("up").addEventListener("click", function() {
+		video_el.width = video_el.width * 1.5;
+		video_el.height = video_el.width / aspect_ratio;
+	}, false);
+}, false);
+
+function showMessage(msg, success_flag) {
+	var el = document.getElementById("msg");
+	el.textContent = msg;
+	if(success_flag) {
+		el.classList.add("success");
+	} else {
+		el.classList.add("error");
+	}
+}
+
+})();
+</script>
+
+</body>
+</html>

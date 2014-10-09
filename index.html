@@ -118,9 +118,10 @@ figure figcaption {
 		<li><a href="#types_of_media_data">3 Types of media data</a></li>
 		<li><a href="#auto_play">4 Auto play</a></li>
 		<li><a href="#properties_for_video_scenes">5 Properties for video scenes</a></li>
-		<li><a href="#properties_for_audio">6 Properties for audio</a></li>
-		<li><a href="#preloading_media_data">7 Preloading media data</a></li>
-		<li><a href="#runtime_conformance_test_suites">8 Runtime conformance test suites</a></li>
+		<li><a href="#transforming_video">6 Transforming video</a></li>
+		<li><a href="#properties_for_audio">7 Properties for audio</a></li>
+		<li><a href="#preloading_media_data">8 Preloading media data</a></li>
+		<li><a href="#runtime_conformance_test_suites">9 Runtime conformance test suites</a></li>
 		<li><a href="#references">References</a></li>
 	</ol>
 </nav>
@@ -240,70 +241,75 @@ media_el.play();</code></pre>
 	<p>If the <a href="#application">application</a><a href="#player"></a> runs inside a hybrid mobile app and the underlying <a href="#runtime">runtime</a> doesn't allow the <a href="#application">application</a><a href="#player"></a> to start playing media data, the <a href="#application">application</a><a href="#player"></a> may invoke non-standard APIs exposed by the hybrid mobile app framework.</p>
 </section>
 <section>
-	<h2 id="properties_for_video_scenes">5 Properties for video scenes</h2>
-	<p>Videos are shown in the <a href="#region">region</a> as a <a href="#scene">scene</a>. <a href="#region">Region</a>s necessarily don't  have the same width and height as the video. Furthermore, the aspect ratios of the <a href="#region">region</a> and video could be not identical. Therefore, <a href="#application">application</a>s need to support <a href="http://futomi.github.io/Web-based_Signage_Player_Core_Profile/#properties_for_single_image_scenes">the same properties as image scene defined in the Core Profile</a> for showing videos.</p>
-	<p>The scene whose content  is a video has 3 properties as follows. The <a href="#application">application</a> must support all properties:</p>
-	<dl>
-		<dt>Fit</dt>
-		<dd>
-			<p>This property defines how to scale the video fitting to the size of the region. Applications must support the fitting types as follows at least:</p>
-			<dl>
-				<dt>None</dt>
-				<dd>
-					<p>The video is not scaled at all. The video will be shown as it is in the region. If the size of the video is smaller than the size of the underlying region, margins will appear. The margin will be colored the background color specified for the region (typically, it will be black).</p>
-				</dd>
-				<dt>Meet</dt>
-				<dd>
-					<p>The video is scaled preserving the aspect ratio of the video so that either the width or the height of the video is equal to that of the region, and the whole video is visible. If the aspect ratio of the video is not as same as the aspect ratio of the region, the video will be letterboxed or pillarboxed (i.e. margins will appear on both of the top and bottom sides or both of the left and right sides of the region). The margin will be colored in the background color specified for the region (typically, it will be black).</p>
-				</dd>
-				<dt>Fill</dt>
-				<dd>
-					<p>The video is scaled preserving the aspect ratio of the video so that either the width or the height of the video is equal to the one of the region, and the whole region is covered by the video. If the aspect ratio of the video is not as same as the aspect ratio of the region, a part of the video is invisible.</p>
-				</dd>
-			</dl>
-		</dd>
-		<dt>Horizontal align</dt>
-		<dd>
-			<p>This property defines how to align the video horizontally in the region. Applications must support the horizontal align types as follows:</p>
-			<dl>
-				<dt>Left</dt>
-				<dd>
-					<p>The video is aligned so that the left side of the video fits the left side of the region.</p>
-				</dd>
-				<dt>Center</dt>
-				<dd>
-					<p>The video is aligned so that the horizontal center of the video fits the horizontal center of the region.</p>
-				</dd>
-				<dt>Right</dt>
-				<dd>
-					<p>The video is aligned so that the right side of the video fits the right side of the region.</p>
-				</dd>
-			</dl>
-		</dd>
-		<dt>Vertical align</dt>
-		<dd>
-			<p>This property defines how to align the video vertically in the region. Applications must support the vertical align types as follows:</p>
-			<dl>
-				<dt>Top</dt>
-				<dd>
-					<p>The video is aligned so that the top side of the video fits the top side of the region.</p>
-				</dd>
-				<dt>Middle</dt>
-				<dd>
-					<p>The video is aligned so that the vertical center of the video fits the vertical center of the region.</p>
-				</dd>
-				<dt>Bottom</dt>
-				<dd>
-					<p>The video is aligned so that the bottom side of the video fits the bottom side of the region.</p>
-				</dd>
-			</dl>
-		</dd>
-	</dl>
-	<p>To implement the fit property, the application can use the <code>width</code>, <code>height</code> attribute of the <code>video</code> element specified in HTML5, or <code>scale()</code> or <code>scale3d()</code> specified in CSS Transforms. <a href="#refsCSSTRANSFORMS">[CSSTRANSFORMS]</a> <a href="#refsHTML5">[HTML5]</a></p>
-	<p>The <a href="#runtime">runtime</a> must support CSS Transforms. Besides, the <code>scale()</code> or <code>scale3d()</code> specified in CSS Transforms must  work for the <code>video</code> elements appropriately.</p>
+<h2 id="properties_for_video_scenes">5 Properties for video scenes</h2>
+<p>Videos are shown in the <a href="#region">region</a> as a <a href="#scene">scene</a>. <a href="#region">Region</a>s necessarily don't  have the same width and height as the video. Furthermore, the aspect ratios of the <a href="#region">region</a> and video could be not identical. Therefore, <a href="#application">application</a>s need to support <a href="http://futomi.github.io/Web-based_Signage_Player_Core_Profile/#properties_for_single_image_scenes">the same properties as image scene defined in the Core Profile</a> for showing videos.</p>
+<p>The scene whose content  is a video has 3 properties as follows. The <a href="#application">application</a> must support all properties:</p>
+<dl>
+	<dt>Fit</dt>
+	<dd>
+		<p>This property defines how to scale the video fitting to the size of the region. Applications must support the fitting types as follows at least:</p>
+		<dl>
+			<dt>None</dt>
+			<dd>
+				<p>The video is not scaled at all. The video will be shown as it is in the region. If the size of the video is smaller than the size of the underlying region, margins will appear. The margin will be colored the background color specified for the region (typically, it will be black).</p>
+			</dd>
+			<dt>Meet</dt>
+			<dd>
+				<p>The video is scaled preserving the aspect ratio of the video so that either the width or the height of the video is equal to that of the region, and the whole video is visible. If the aspect ratio of the video is not as same as the aspect ratio of the region, the video will be letterboxed or pillarboxed (i.e. margins will appear on both of the top and bottom sides or both of the left and right sides of the region). The margin will be colored in the background color specified for the region (typically, it will be black).</p>
+			</dd>
+			<dt>Fill</dt>
+			<dd>
+				<p>The video is scaled preserving the aspect ratio of the video so that either the width or the height of the video is equal to the one of the region, and the whole region is covered by the video. If the aspect ratio of the video is not as same as the aspect ratio of the region, a part of the video is invisible.</p>
+			</dd>
+		</dl>
+	</dd>
+	<dt>Horizontal align</dt>
+	<dd>
+		<p>This property defines how to align the video horizontally in the region. Applications must support the horizontal align types as follows:</p>
+		<dl>
+			<dt>Left</dt>
+			<dd>
+				<p>The video is aligned so that the left side of the video fits the left side of the region.</p>
+			</dd>
+			<dt>Center</dt>
+			<dd>
+				<p>The video is aligned so that the horizontal center of the video fits the horizontal center of the region.</p>
+			</dd>
+			<dt>Right</dt>
+			<dd>
+				<p>The video is aligned so that the right side of the video fits the right side of the region.</p>
+			</dd>
+		</dl>
+	</dd>
+	<dt>Vertical align</dt>
+	<dd>
+		<p>This property defines how to align the video vertically in the region. Applications must support the vertical align types as follows:</p>
+		<dl>
+			<dt>Top</dt>
+			<dd>
+				<p>The video is aligned so that the top side of the video fits the top side of the region.</p>
+			</dd>
+			<dt>Middle</dt>
+			<dd>
+				<p>The video is aligned so that the vertical center of the video fits the vertical center of the region.</p>
+			</dd>
+			<dt>Bottom</dt>
+			<dd>
+				<p>The video is aligned so that the bottom side of the video fits the bottom side of the region.</p>
+			</dd>
+		</dl>
+	</dd>
+</dl>
+<section>
+	<p>To implement the fit property, the <a href="#application">application</a> can use the <code>width</code>, <code>height</code> attribute of the <code>video</code> element specified in <cite>HTML5</cite>.</p>
+	<p>Whenever the <code>width</code> and <code>height</code> attribute of the <code>HTMLVideoElement</code> object is set by the <a href="#application">application</a>, the <a href="#runtime">runtime</a> must adapt the dimension of the video  exactly to these request. <a href="#refsHTML5">[HTML5]</a></p>
 </section>
 <section>
-	<h2 id="properties_for_audio">6 Properties for audio</h2>
+	<h2 id="transforming_video">6 Transforming video</h2>
+	<p>, or <code>scale()</code> or <code>scale3d()</code> specified in <cite>CSS Transforms</cite>. <a href="#refsCSSTRANSFORMS">[CSSTRANSFORMS]</a></p>
+</section>
+<section>
+	<h2 id="properties_for_audio">7 Properties for audio</h2>
 	<p>An audio content is associated to a <a href="#scene">scene</a> by the control data. The <a href="#application">application</a> must play the audio data following the control data. Audio contents are mainly used for background music or getting attention of passers.</p>
 	<p>A <a href="#scene">scene</a> with an audio content  has the properties for the audio data as follows. The <a href="#application">application</a> must support all properties:</p>
 	<dl>
@@ -324,7 +330,7 @@ media_el.play();</code></pre>
 	<p>If the loop property above is set to true, the <a href="#application">application</a> may use the <code>loop</code> attribute of the <code>audio</code> element.</p>
 </section>
 <section>
-	<h2 id="preloading_media_data">7 Preloading media data</h2>
+	<h2 id="preloading_media_data">8 Preloading media data</h2>
 	<p><a href="#web-based_signage">Web-based signage</a> is required to start playing videos as soon as the scene is shown followed by the control data. The size of a media file is generally big, it is too late to start to load the data when the scene are shown.</p>
 	<p>To start playing media data smoothly, the <a href="#application">application</a> are strongly recommended to preload enough  data to start to play before the relevant scene are shown. The <a href="#application">application</a> can create an media element (i.e. <code>video</code> or <code>audio</code> element) and set the <code>src</code> attribute to the URL of the media file before the scene is shown. The <a href="#application">application</a> must not set the <code>preload</code> attribute of the media element to &quot;<code>none</code>&quot; or &quot;<code>metadata</code>&quot;, because setting these value prevents preloading media data. If the <code>preload</code> attribute is needed, the value should be &quot;<code>auto</code>&quot;.</p>
 	<p>It is preferable that the <code>canplaythrough</code> event are fired on the <code>video</code> element before the scene is shown. The <a href="#application">application</a> are recommended to start to prepare media element well in advance.</p>
@@ -332,7 +338,7 @@ media_el.play();</code></pre>
 	<p>If the <a href="#runtime">runtime</a> preloads enough media data, the <a href="#runtime">runtime</a> must fire the <code>canplaythrough</code> event on the relevant media element.</p>
 </section>
 <section>
-	<h2 id="runtime_conformance_test_suites">8 Runtime conformance test suites</h2>
+	<h2 id="runtime_conformance_test_suites">9 Runtime conformance test suites</h2>
 	<p>The conformant <a href="#runtime">runtime</a> must run the test suites appropriately without any JavaScript error:</p>
 	<dl>
 		<dt><a href="http://rd.newphoria.com/W3C/WBS/Web-based_Signage_Player_Basic_Media_Profile/test/video.html">Video codec, preload, autoplay test</a></dt>
@@ -346,6 +352,11 @@ media_el.play();</code></pre>
 			<p>The conformant <a href="#runtime">runtime</a> must run this test appropriately.</p>
 			<p>This test checks which audio codecs the runtime supports, whether  the runtime preloads media data enough to start to play before playing a audio, and whether the runtime can start to play a audio without any user actions.</p>
 			<p>The runtime must pass all tests at laest for one codec.</p>
+		</dd>
+		<dt><a href="http://rd.newphoria.com/W3C/WBS/Web-based_Signage_Player_Basic_Media_Profile/test/video_scale.html">Video scaling test</a></dt>
+		<dd>
+			<p>The conformant <a href="#runtime">runtime</a> must run this test appropriately.</p>
+			<p>This test checks whether the video is scaled appropriately setting the <code>width</code> and <code>height</code> attribute of the <code>HTMLVideoElement</code> object.</p>
 		</dd>
 	</dl>
 </section>
